@@ -58,7 +58,7 @@ const Background = ({mobileDevice}: BackgroundProps) => {
 		const fadeMaterial = new THREE.ShaderMaterial({
 			uniforms: {
 				trailTexture: { value: null },
-				fade: { value: 0.8 }
+				fade: { value: 0.6 }
 			},
 			vertexShader: `
             varying vec2 vUv;
@@ -85,8 +85,8 @@ const Background = ({mobileDevice}: BackgroundProps) => {
 		fadeScene.add(fadePlane)
 
 		// Particle System
-		const NUM_PARTICLES = 2000
-		const NOISE_SCALE = 0.002
+		const NUM_PARTICLES = 1000
+		const NOISE_SCALE = 0.001
 		const REPEL_RADIUS = 100
 		const REPEL_STRENGTH = 5
 		const points: any[] = []
@@ -230,7 +230,7 @@ const Background = ({mobileDevice}: BackgroundProps) => {
 	}, [])
 
 	return (
-		<div id='three-background' ref={containerRef}></div>
+		<div id='three-background' ref={containerRef} className='fixed top-0'></div>
 	)
 }
 

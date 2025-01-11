@@ -21,7 +21,8 @@ const Homepage = () => {
 	}, [])
 
 	return (
-		<div id='homepage'>
+		<div id='homepage' className='relative'>
+			<Mouse/>
 			<Navbar/>
 			<section>
 				{/* Title Section */}
@@ -29,7 +30,7 @@ const Homepage = () => {
 					<h1 className='text-2xl mb-4 flex items-center justify-center'>
 						<span>ANKIT KUMAR JHA</span>
 					</h1>
-					<div className='title-points text-[10px] border-black border-t-2 flex justify-between pt-3'>
+					<div className='title-points text-[10px] border-white border-t-2 flex justify-between pt-3'>
 						<span>2023 comp sci grad</span>
 						<span>frontend developer @ DEPT</span>
 						<span>mumbai</span>
@@ -40,9 +41,9 @@ const Homepage = () => {
 				<div className='homepage-contents container'>
 					<h3>CONTENTS</h3>
 					<ul className='contents-list text-[10px] mt-4'>
-						<li className='border-b border-black pr-1.5 w-max mb-1.5'>about</li>
-						<li className='border-b border-black pr-1.5 w-max mb-1.5'>skills & work ex</li>
-						<li className='border-b border-black pr-1.5 w-max mb-1.5'>contact info & socials</li>
+						<li className='border-b border-white pr-1.5 w-max mb-1.5'>about</li>
+						<li className='border-b border-white pr-1.5 w-max mb-1.5'>skills & work ex</li>
+						<li className='border-b border-white pr-1.5 w-max mb-1.5'>contact info & socials</li>
 					</ul>
 				</div>
 			</section>
