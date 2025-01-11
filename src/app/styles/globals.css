@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*, *:before, *:after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+}
+
+:root {
+    --background: #ffffff;
+    --foreground: #171717;
+    --gray: #d6d6d6;
+    --black: #000;
+    --white: #fff;
+    --dark-gray: #363636
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --background: #0a0a0a;
+        --foreground: #ededed;
+    }
+}
+
+/* fonts */
+@font-face {
+    font-family: 'unison-pro';
+    src: url('/fonts/unison-pro-bold.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    color: var(--white);
+    background: var(--dark-gray);
+    font-family: Arial, Helvetica, sans-serif;
+    overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: unison-pro, sans-serif;
+}
+
+canvas {
+    display: block;
+}
+
+/* Navbar */
+#navbar {
+    border-bottom: 3px solid var(--black);
+}
+
+.container {
+    max-width: 1536px;
+    margin: 0 auto;
+}
+
+/* Homepage */
+.title {
+    padding-inline: 32px;
+}
+
+/* Responsive Mobile */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+        padding: 0 2rem;
+        margin: unset;
+    }
+
+    #mouse-follower {
+        display: none;
+    }
+
+    .homepage-contents {
+        margin-top: 4rem;
+    }
+}
