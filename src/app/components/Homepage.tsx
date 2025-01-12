@@ -22,7 +22,6 @@ const Homepage = () => {
 
 	return (
 		<div id='homepage' className='relative'>
-			<Mouse/>
 			<Navbar/>
 			<section>
 				{/* Title Section */}

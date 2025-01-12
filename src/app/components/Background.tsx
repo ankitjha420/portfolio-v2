@@ -21,7 +21,7 @@ const Background = ({mobileDevice}: BackgroundProps) => {
 
 		const renderer = new THREE.WebGLRenderer()
 		renderer.setSize(window.innerWidth, window.innerHeight)
-		renderer.setClearColor(0x000000, 0)
+		renderer.setClearColor(0xd6d6d6, 0)
 		renderer.autoClear = false
 		containerRef.current?.appendChild(renderer.domElement)
 
@@ -85,8 +85,8 @@ const Background = ({mobileDevice}: BackgroundProps) => {
 		fadeScene.add(fadePlane)
 
 		// Particle System
-		const NUM_PARTICLES = 1000
-		const NOISE_SCALE = 0.001
+		const NUM_PARTICLES = mobileDevice ? 200 : 2000
+		const NOISE_SCALE = 0.003
 		const REPEL_RADIUS = 100
 		const REPEL_STRENGTH = 5
 		const points: any[] = []
