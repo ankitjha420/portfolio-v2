@@ -1,11 +1,11 @@
 import {useEffect, useRef} from "react"
 import * as THREE from "three"
 
-interface BackgroundProps {
+interface PointsBackgroundProps {
 	mobileDevice: boolean
 }
 
-const Background = ({mobileDevice}: BackgroundProps) => {
+const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 	const containerRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
@@ -219,7 +219,7 @@ const Background = ({mobileDevice}: BackgroundProps) => {
 
 			// Remove event listeners
 			document.removeEventListener('mousemove', onMouseMove)
-			window.addEventListener('resize', onWindowResize)
+			window.removeEventListener(onWindowResize)
 
 			pointCloud.geometry.dispose()
 			fadeMaterial.dispose()
@@ -230,8 +230,8 @@ const Background = ({mobileDevice}: BackgroundProps) => {
 	}, [])
 
 	return (
-		<div id='three-background' ref={containerRef} className='fixed top-0'></div>
+		<div id='points-background' ref={containerRef} className='absolute top-0'></div>
 	)
 }
 
-export default Background
+export default PointsBackground
