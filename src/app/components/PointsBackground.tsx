@@ -219,7 +219,7 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 
 			// Remove event listeners
 			document.removeEventListener('mousemove', onMouseMove)
-			window.removeEventListener(onWindowResize)
+			window.removeEventListener('resize', onWindowResize)
 
 			pointCloud.geometry.dispose()
 			fadeMaterial.dispose()

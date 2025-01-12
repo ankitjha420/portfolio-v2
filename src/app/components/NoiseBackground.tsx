@@ -156,8 +156,7 @@ const NoiseBackground = () => {
 			const width = window.innerWidth
 			const height = window.innerHeight
 
-			scene.children[0].width = width
-			scene.children[0].height = height
+			scene.children[0].scale.set(width, height, 1)
 
 			camera.left = width / -2
 			camera.right = width / 2
@@ -172,7 +171,7 @@ const NoiseBackground = () => {
 		// clean up
 		return () => {
 			cancelAnimationFrame(animationFrameId)
-			window.removeEventListener(onWindowResize)
+			window.removeEventListener('resize', onWindowResize)
 			renderer.dispose()
 			plane.geometry.dispose()
 			planeMaterial.dispose()
