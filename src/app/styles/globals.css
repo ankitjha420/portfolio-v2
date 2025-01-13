@@ -67,11 +67,20 @@ canvas {
     padding-inline: 32px;
 }
 
+#navbar {
+    position: fixed;
+    width: 100%;
+    top: 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 10;
+}
+
 /* Responsive Mobile */
 @media (max-width: 768px) {
     .container {
         width: 100%;
-        padding: 0 2rem;
+        padding: 0 30px;
         margin: unset;
     }
 

@@ -179,7 +179,7 @@ const NoiseBackground = () => {
 	}, [])
 
 	return (
-		<div id="noise-background" ref={containerRef}></div>
+		<div id="noise-background" ref={containerRef} className="fixed top-0"></div>
 	)
 }
 

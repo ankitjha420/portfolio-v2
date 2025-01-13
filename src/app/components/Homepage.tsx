@@ -5,7 +5,8 @@ import Navbar from "@/app/components/Navbar"
 import Footer from "@/app/components/Footer"
 // import Mouse from "@/app/components/Mouse"
 import PointsBackground from "@/app/components/PointsBackground"
-import NoiseBackground from "@/app/components/NoiseBackground";
+import NoiseBackground from "@/app/components/NoiseBackground"
+import About from "@/app/components/About"
 
 const Homepage = () => {
 	const [isMobile, setIsMobile] = useState<boolean>(
@@ -28,8 +29,8 @@ const Homepage = () => {
 			<section className='h-[96vh]'>
 				<PointsBackground mobileDevice={isMobile}/>
 				{/* Title Section */}
-				<div className='title mt-32 flex flex-col'>
-					<h1 className='text-2xl mb-4 flex items-center justify-center'>
+				<div className='title mt-32 flex flex-col relative z-[2]'>
+					<h1 className='text-2xl lg:text-[4rem] mb-4 flex items-center justify-center'>
 						<span>ANKIT KUMAR JHA</span>
 					</h1>
 					<div className='title-points text-[10px] border-white border-t-2 flex justify-between pt-3'>
@@ -40,7 +41,7 @@ const Homepage = () => {
 				</div>
 
 				{/* Contents Section */}
-				<div className='homepage-contents container'>
+				<div className='homepage-contents container relative z-[2]'>
 					<h3>CONTENTS</h3>
 					<ul className='contents-list text-[10px] mt-4'>
 						<li className='border-b border-white pr-1.5 w-max mb-1.5'>about</li>
@@ -52,6 +53,7 @@ const Homepage = () => {
 
 			<section className='h-[100vh]'>
 				<NoiseBackground/>
+				<About/>
 			</section>
 
 			<Footer/>

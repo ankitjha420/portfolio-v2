@@ -85,8 +85,8 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 		fadeScene.add(fadePlane)
 
 		// Particle System
-		const NUM_PARTICLES = mobileDevice ? 200 : 2000
-		const NOISE_SCALE = 0.003
+		const NUM_PARTICLES = mobileDevice ? 500 : 2000
+		const NOISE_SCALE = 0.001
 		const REPEL_RADIUS = 100
 		const REPEL_STRENGTH = 5
 		const points: any[] = []
@@ -230,7 +230,7 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 	}, [])
 
 	return (
-		<div id='points-background' ref={containerRef} className='absolute top-0'></div>
+		<div id='points-background' ref={containerRef} className='fixed top-0'></div>
 	)
 }
 
