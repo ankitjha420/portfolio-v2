@@ -52,11 +52,15 @@ const Background = ({mobileDevice}: BackgroundProps) => {
 		scene.add(plane)
 
 		// particle simulation ->
+		const gl = renderer.getContext()
+		const isFloatAvailable = gl.getExtension('OES_texture_float');
+		const isFloatBlendAvailable = gl.getExtension('EXT_float_blend');
+
 		const renderTargetParams = {
 			minFilter: THREE.LinearFilter,
 			magFilter: THREE.LinearFilter,
 			format: THREE.RGBAFormat,
-			type: THREE.FloatType
+			type: isFloatAvailable ? THREE.FloatType : THREE.UnsignedByteType
 		}
 		let renderTarget1 = new THREE.WebGLRenderTarget(
 			window.innerWidth,

@@ -4,7 +4,7 @@ import {useEffect, useState} from "react"
 import Navbar from "@/app/components/Navbar"
 import Footer from "@/app/components/Footer"
 import About from "@/app/components/About"
-import Background from "@/app/components/Background";
+import Background from "@/app/components/Background"
 
 const Homepage = () => {
 	const [isMobile, setIsMobile] = useState<boolean>(
