@@ -3,10 +3,8 @@
 import {useEffect, useState} from "react"
 import Navbar from "@/app/components/Navbar"
 import Footer from "@/app/components/Footer"
-// import Mouse from "@/app/components/Mouse"
-import PointsBackground from "@/app/components/PointsBackground"
-import NoiseBackground from "@/app/components/NoiseBackground"
 import About from "@/app/components/About"
+import Background from "@/app/components/Background";
 
 const Homepage = () => {
 	const [isMobile, setIsMobile] = useState<boolean>(
@@ -24,10 +22,10 @@ const Homepage = () => {
 
 	return (
 		<div id='homepage' className='relative'>
+			<Background mobileDevice={isMobile}/>
 			<Navbar/>
 
 			<section className='h-[96vh]'>
-				<PointsBackground mobileDevice={isMobile}/>
 				{/* Title Section */}
 				<div className='title mt-32 flex flex-col relative z-[2]'>
 					<h1 className='text-2xl lg:text-[4rem] mb-4 flex items-center justify-center'>
@@ -52,7 +50,6 @@ const Homepage = () => {
 			</section>
 
 			<section className='h-[100vh]'>
-				<NoiseBackground/>
 				<About/>
 			</section>
 

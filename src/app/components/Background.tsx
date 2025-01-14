@@ -1,11 +1,15 @@
-import {useEffect, useRef} from "react"
 import * as THREE from "three"
+import {useEffect, useRef} from "react"
+import noiseShader from "@/app/shaders/noise.glsl"
+import noiseVertexShader from "@/app/shaders/noiseVertex.glsl"
+import pointsShader from "@/app/shaders/points.glsl"
+import pointsVertexShader from "@/app/shaders/pointsVertex.glsl"
 
-interface PointsBackgroundProps {
+interface BackgroundProps {
 	mobileDevice: boolean
 }
 
-const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
+const Background = ({mobileDevice}: BackgroundProps) => {
 	const containerRef = useRef<HTMLDivElement | null>(null)
 
 	useEffect(() => {
@@ -19,13 +23,35 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 			1000
 		)
 
+		camera.position.z = 1000
+		camera.lookAt(0, 0, 0)
+
+		// renderer
 		const renderer = new THREE.WebGLRenderer()
 		renderer.setSize(window.innerWidth, window.innerHeight)
 		renderer.setClearColor(0xd6d6d6, 0)
 		renderer.autoClear = false
 		containerRef.current?.appendChild(renderer.domElement)
 
-		// Render Targets for Ping-Pong Buffering
+		const planeGeometry = new THREE.PlaneGeometry(
+			window.innerWidth, window.innerHeight
+		)
+		const planeMaterial = new THREE.ShaderMaterial({
+			uniforms: {
+				uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+				uTime: { value: 0.0 }
+			},
+			vertexShader: noiseVertexShader,
+			fragmentShader: noiseShader
+		})
+
+		const plane: THREE.Mesh = new THREE.Mesh(
+			planeGeometry,
+			planeMaterial
+		)
+		scene.add(plane)
+
+		// particle simulation ->
 		const renderTargetParams = {
 			minFilter: THREE.LinearFilter,
 			magFilter: THREE.LinearFilter,
@@ -60,23 +86,8 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 				trailTexture: { value: null },
 				fade: { value: 0.6 }
 			},
-			vertexShader: `
-            varying vec2 vUv;
-            void main() {
-                vUv = uv;
-                gl_Position = vec4(position, 1.0);
-            }
-        `,
-			fragmentShader: `
-            uniform sampler2D trailTexture;
-            uniform float fade;
-            varying vec2 vUv;
-
-            void main() {
-                vec4 texel = texture2D(trailTexture, vUv);
-                gl_FragColor = vec4(texel.rgb * fade, texel.a * fade);
-            }
-        `
+			vertexShader: pointsVertexShader,
+			fragmentShader: pointsShader
 		})
 		const fadePlane = new THREE.Mesh(
 			new THREE.PlaneGeometry(2, 2),
@@ -84,7 +95,7 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 		)
 		fadeScene.add(fadePlane)
 
-		// Particle System
+		// particle system mathematics
 		const NUM_PARTICLES = mobileDevice ? 500 : 2000
 		const NOISE_SCALE = 0.001
 		const REPEL_RADIUS = 100
@@ -126,14 +137,13 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 		const pointCloud = new THREE.Points(geometry, material)
 		scene.add(pointCloud)
 
-		camera.position.z = 100
-
-		// animation Loop
+		// animation
 		let animationFrameId: number
-		function animate() {
+		const animate = (): void => {
 			animationFrameId = requestAnimationFrame(animate)
-			time += 0.001
 
+			// update particles
+			time += 0.001
 			const positions = pointCloud.geometry.attributes.position.array
 
 			for (let i = 0; i < points.length; i++) {
@@ -167,23 +177,23 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 
 			pointCloud.geometry.attributes.position.needsUpdate = true
 
-			// Step 1: Apply fading to previous frame
-			fadeMaterial.uniforms.trailTexture.value = previousRenderTarget.texture
+			planeMaterial.uniforms.uTime.value += 0.01
+
+			// particle trail effect
 			renderer.setRenderTarget(currentRenderTarget)
 			renderer.clear()
-			renderer.render(fadeScene, fadeCamera)
+			renderer.render(scene, camera)  // render main scene
 
-			// Step 2: Draw points on top
-			renderer.render(scene, camera)
-
-			// Step 3: Render to screen
+			// fade effect
 			renderer.setRenderTarget(null)
+			renderer.clear()
+
+			fadeMaterial.uniforms.trailTexture.value = previousRenderTarget.texture
 			renderer.render(fadeScene, fadeCamera);
 
-			// Swap buffers
+			// swap render targets
 			[currentRenderTarget, previousRenderTarget] = [previousRenderTarget, currentRenderTarget]
 		}
-
 		animate()
 
 		// mouse & touch Interaction
@@ -199,6 +209,8 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 			const width = window.innerWidth
 			const height = window.innerHeight
 
+			scene.children[0].scale.set(width, height, 1)
+
 			camera.left = width / -2
 			camera.right = width / 2
 			camera.top = height / 2
@@ -209,29 +221,28 @@ const PointsBackground = ({mobileDevice}: PointsBackgroundProps) => {
 			renderTarget1.setSize(width, height)
 			renderTarget2.setSize(width, height)
 		}
-
 		window.addEventListener('resize', onWindowResize)
 
-		// clean up use effect
+		// clean up everything
 		return () => {
-			// Cancel animation frame
 			cancelAnimationFrame(animationFrameId)
 
-			// Remove event listeners
 			document.removeEventListener('mousemove', onMouseMove)
 			window.removeEventListener('resize', onWindowResize)
 
 			pointCloud.geometry.dispose()
 			fadeMaterial.dispose()
-			renderer.dispose()
 			renderTarget1.dispose()
 			renderTarget2.dispose()
+			plane.geometry.dispose()
+			planeMaterial.dispose()
+			renderer.dispose()
 		}
 	}, [])
 
 	return (
-		<div id='points-background' ref={containerRef} className='fixed top-0'></div>
+		<div id="three-background" ref={containerRef} className="fixed top-0"></div>
 	)
 }
 
-export default PointsBackground
+export default Background
