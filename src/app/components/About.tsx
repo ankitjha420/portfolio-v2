@@ -1,9 +1,9 @@
-import Spline from '@splinetool/react-spline/next'
+import Halo from "@/app/components/Halo"
 
 export default function About() {
 	return (
-		<div id="about-container" className="container relative z-[2]">
-			<div>
+		<div id="about-container" className="relative z-[2]">
+			<div className="container">
 				<h3 className="text-lg mb-4">about me</h3>
 				<p className="text-xs">
 					“No, Plymouth would suit me well enough,” I said, grinning at his understandable
@@ -22,6 +22,8 @@ export default function About() {
 					{/*/>*/}
 				</div>
 			</div>
+
+			<Halo/>
 		</div>
 	)
 }
