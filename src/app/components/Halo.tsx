@@ -267,6 +267,7 @@ const Halo = () => {
 		scene.position.y -= 5
 
 		const controls = new OrbitControls(camera, containerRef.current!)
+		controls.enableZoom = false
 		controls.update()
 
 		const onWindowResize = () => {
