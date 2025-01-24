@@ -1,9 +1,10 @@
 'use client'
 
-import React, {useEffect, useMemo, useRef} from "react"
+import React, {useEffect, useRef} from "react"
 import * as THREE from "three"
-import {GLTFLoader, DRACOLoader, GLTF, OrbitControls} from "three-stdlib"
-import {shuffle} from "@/app/utils/hooks"
+import gsap from "gsap"
+import {GLTFLoader, DRACOLoader, OrbitControls} from "three-stdlib"
+import {addIcons, shuffle} from "@/app/utils/hooks"
 
 // paths to tech stack icons ->
 const iconsMap: { [key: string]: string } = {
@@ -61,7 +62,6 @@ const Halo = () => {
 		opLight.position.set(-10, -10, -10)
 		scene.add(opLight)
 
-
 		const renderer = new THREE.WebGLRenderer({antialias: true})
 		renderer.setPixelRatio(window.devicePixelRatio)
 		renderer.setSize(window.innerWidth, window.innerHeight)
@@ -80,186 +80,179 @@ const Halo = () => {
 		loader.setDRACOLoader(dracoLoader)
 		loader.setPath('models/');
 
+		// mouse move raycaster
+		const raycaster = new THREE.Raycaster()
+		const mouse = new THREE.Vector2();
+		let models: THREE.Object3D[] = [];
+
 		(function () {
 			// swiss army knife model
-			loader.load('sak.gltf', function (gltf) {
-				sakRef.current = gltf.scene
-				gltf.scene.scale.set(0.6, 0.6, 0.6)
-				gltf.scene.position.y -= 4
-				scene.add(gltf.scene)
-			})
+			addIcons('sak', 'sak.gltf', 0.6, {x: 0, y: -4}, scene, models)
 
 			// go icon
-			loader.load(iconsMap["go"], (gltf) => {
-				gltf.scene.scale.set(0.015, 0.015, 0.015)
-				iconRefs[0].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[0])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[0])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[0])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('go',
+				iconsMap['go'],
+				0.015,
+				{
+					x: RADIUS + (RADIUS * RANDOM_NUMBERS[0]) * Math.cos(ANGLE_STEP * SHUFFLE[0]),
+					y: RADIUS + (RADIUS * RANDOM_NUMBERS[0]) * Math.sin(ANGLE_STEP * SHUFFLE[0])
+				},
+				scene,
+				models
+			)
 
 			// linux icon
-			loader.load(iconsMap["linux"], (gltf) => {
-				gltf.scene.scale.set(0.04, 0.04, 0.04)
-				iconRefs[1].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[1])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[1])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[1])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('linux',
+				iconsMap['linux'],
+				0.04,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[1])) * Math.cos(ANGLE_STEP * SHUFFLE[1]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[1])) * Math.sin(ANGLE_STEP * SHUFFLE[1]),
+				},
+				scene,
+				models
+			)
 
 			// react icon
-			loader.load(iconsMap["react"], (gltf) => {
-				gltf.scene.scale.set(0.025, 0.025, 0.025)
-				iconRefs[2].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[2])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[2])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[2])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('react',
+				iconsMap['react'],
+				0.025,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[2])) * Math.cos(ANGLE_STEP * SHUFFLE[2]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[2])) * Math.sin(ANGLE_STEP * SHUFFLE[2]),
+				},
+				scene,
+				models
+			)
 
 			// aws icon
-			loader.load(iconsMap["aws"], (gltf) => {
-				gltf.scene.scale.set(0.015, 0.015, 0.015)
-				iconRefs[3].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[3])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[3])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[3])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('aws',
+				iconsMap['aws'],
+				0.015,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[3])) * Math.cos(ANGLE_STEP * SHUFFLE[3]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[3])) * Math.sin(ANGLE_STEP * SHUFFLE[3]),
+				},
+				scene,
+				models
+			)
 
 			// docker icon
-			loader.load(iconsMap["docker"], (gltf) => {
-				gltf.scene.scale.set(0.02, 0.02, 0.02)
-				iconRefs[4].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[4])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[4])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[4])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('docker',
+				iconsMap['docker'],
+				0.02,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[4])) * Math.cos(ANGLE_STEP * SHUFFLE[4]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[4])) * Math.sin(ANGLE_STEP * SHUFFLE[4]),
+				},
+				scene,
+				models
+			)
 
 			// git icon
-			loader.load(iconsMap["git"], (gltf) => {
-				gltf.scene.scale.set(0.01, 0.01, 0.01)
-				iconRefs[5].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[5])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[5])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[5])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('git',
+				iconsMap['git'],
+				0.01,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[5])) * Math.cos(ANGLE_STEP * SHUFFLE[5]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[5])) * Math.sin(ANGLE_STEP * SHUFFLE[5]),
+				},
+				scene,
+				models
+			)
 
 			// js icon
-			loader.load(iconsMap["js"], (gltf) => {
-				gltf.scene.scale.set(0.015, 0.015, 0.015)
-				iconRefs[6].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[6])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[6])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[6])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('js',
+				iconsMap['js'],
+				0.015,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[6])) * Math.cos(ANGLE_STEP * SHUFFLE[6]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[6])) * Math.sin(ANGLE_STEP * SHUFFLE[6]),
+				},
+				scene,
+				models
+			)
 
 			// python icon
-			loader.load(iconsMap["py"], (gltf) => {
-				gltf.scene.scale.set(0.0015, 0.0015, 0.0015)
-				iconRefs[7].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[7])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[7])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[7])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('py',
+				iconsMap['py'],
+				0.0015,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[7])) * Math.cos(ANGLE_STEP * SHUFFLE[7]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[7])) * Math.sin(ANGLE_STEP * SHUFFLE[7]),
+				},
+				scene,
+				models
+			)
 
 			// postgres icon
-			loader.load(iconsMap["postgres"], (gltf) => {
-				gltf.scene.scale.set(0.01, 0.01, 0.01)
-				iconRefs[8].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[8])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[8])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[8])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('postgres',
+				iconsMap['postgres'],
+				0.01,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[8])) * Math.cos(ANGLE_STEP * SHUFFLE[8]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[8])) * Math.sin(ANGLE_STEP * SHUFFLE[8]),
+				},
+				scene,
+				models
+			)
 
 			// redis icon
-			loader.load(iconsMap["redis"], (gltf) => {
-				gltf.scene.scale.set(0.015, 0.015, 0.015)
-				iconRefs[9].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[9])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[9])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[9])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('redis',
+				iconsMap['redis'],
+				0.015,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[9])) * Math.cos(ANGLE_STEP * SHUFFLE[9]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[9])) * Math.sin(ANGLE_STEP * SHUFFLE[9]),
+				},
+				scene,
+				models
+			)
 
 			// ts icon
-			loader.load(iconsMap["ts"], (gltf) => {
-				gltf.scene.scale.set(0.015, 0.015, 0.015)
-				iconRefs[10].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[10])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[10])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[10])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('ts',
+				iconsMap['ts'],
+				0.015,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[10])) * Math.cos(ANGLE_STEP * SHUFFLE[10]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[10])) * Math.sin(ANGLE_STEP * SHUFFLE[10]),
+				},
+				scene,
+				models
+			)
 
 			// vite icon
-			loader.load(iconsMap["vite"], (gltf) => {
-				gltf.scene.scale.set(0.03, 0.03, 0.03)
-				// @ts-ignore
-				gltf.scene.children[0].children[1].material = new THREE.MeshBasicMaterial(
-					{color: 0x8978FE}
-				)
-				iconRefs[11].current = gltf.scene
-
-				const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[11])
-
-				let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[11])
-				let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[11])
-
-				gltf.scene.position.set(x, y, 0)
-				scene.add(gltf.scene)
-			})
+			addIcons('vite',
+				iconsMap['vite'],
+				0.03,
+				{
+					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[11])) * Math.cos(ANGLE_STEP * SHUFFLE[11]),
+					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[11])) * Math.sin(ANGLE_STEP * SHUFFLE[11]),
+				},
+				scene,
+				models,
+				0x8978FE
+			)
+			// loader.load(iconsMap["vite"], (gltf) => {
+			// 	gltf.scene.scale.set(0.03, 0.03, 0.03)
+			// 	// @ts-ignore
+			// 	gltf.scene.children[0].children[1].material = new THREE.MeshBasicMaterial(
+			// 		{color: 0x8978FE}
+			// 	)
+			// 	iconRefs[11].current = gltf.scene
+			//
+			// 	const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[11])
+			//
+			// 	let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[11])
+			// 	let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[11])
+			//
+			// 	gltf.scene.position.set(x, y, 0)
+			//
+			// 	const boxHelper = new THREE.BoxHelper(gltf.scene, 0xff0000)
+			// 	scene.add(boxHelper)
+			//
+			// 	scene.add(gltf.scene)
+			// })
 
 			render()
 		})()
@@ -280,6 +273,11 @@ const Halo = () => {
 		}
 		window.addEventListener('resize', onWindowResize)
 
+		window.addEventListener('mousemove', (e: MouseEvent) => {
+			mouse.x = (e.clientX / window.innerWidth) * 2 - 1
+			mouse.y = -(e.clientY / window.innerHeight) * 2 + 1
+		})
+
 		// animation ->
 		let animationFrameId: number
 		let time: number = 0
@@ -295,10 +293,23 @@ const Halo = () => {
 
 			for (let i = 0; i < ICON_COUNT; i++) {
 				const ref = iconRefs[i]
+
 				if (ref.current) {
 					ref.current.rotation.y = Math.sin(time * RANDOM_NUMBERS[i] * 5)
 					ref.current.rotation.z = Math.cos(time * RANDOM_NUMBERS[i] * 5)
 				}
+			}
+
+			// mouse interaction with models
+			raycaster.setFromCamera(mouse, camera)
+			let hoveredModel: THREE.Object3D | null = null
+
+			const intersects = raycaster.intersectObjects(
+				models
+			)
+
+			if (intersects.length > 0 && intersects[0].object) {
+				console.log(intersects[0].object.name)
 			}
 
 			controls.update()

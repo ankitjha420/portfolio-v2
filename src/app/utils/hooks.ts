@@ -1,3 +1,6 @@
+import * as THREE from "three"
+import {DRACOLoader, GLTFLoader} from "three-stdlib";
+
 export const useDate = (): string => {
 	const date = new Date()
 
@@ -37,4 +40,44 @@ export const shuffle = (array: number[]) => {
 		currentIndex--
 		[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
 	}
+}
+
+interface IconPosition {
+	x: number
+	y: number
+}
+
+export const addIcons = (
+	name: string,
+	path: string,
+	scale: number,
+	position: IconPosition,
+	scene: THREE.Scene,
+	modelsArray: THREE.Object3D[],
+	color?: number
+): void => {
+	const dracoLoader = new DRACOLoader()
+	dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/')
+	const loader = new GLTFLoader()
+	loader.setDRACOLoader(dracoLoader)
+	loader.setPath('models/')
+
+	loader.load(path, function (gltf) {
+		gltf.scene.scale.set(scale, scale, scale)
+		gltf.scene.position.set(position.x, position.y, 0)
+		gltf.scene.name = name
+
+		if (color) {
+			// @ts-ignore
+			gltf.scene.children[0].children[1].material = new THREE.MeshBasicMaterial(
+				{color: color}
+			)
+		}
+
+		const boxHelper = new THREE.BoxHelper(gltf.scene, 0xff0000)
+		scene.add(boxHelper)
+
+		modelsArray.push(gltf.scene)
+		scene.add(gltf.scene)
+	})
 }
