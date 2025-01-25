@@ -2,9 +2,8 @@
 
 import React, {useEffect, useRef} from "react"
 import * as THREE from "three"
-import gsap from "gsap"
 import {GLTFLoader, DRACOLoader, OrbitControls} from "three-stdlib"
-import {addIcons, shuffle} from "@/app/utils/hooks"
+import {useAllIcons, shuffle} from "@/app/utils/hooks"
 
 // paths to tech stack icons ->
 const iconsMap: { [key: string]: string } = {
@@ -38,10 +37,6 @@ const Halo = () => {
 	const containerRef = useRef<HTMLDivElement>(null)
 	const sakRef = useRef<THREE.Object3D>(null)
 	const iconRefs: React.RefObject<THREE.Object3D<THREE.Object3DEventMap> | null>[] = []
-
-	for (let i = 0; i < ICON_COUNT; i++) {
-		iconRefs.push(useRef<THREE.Object3D>(null))
-	}
 
 	useEffect(() => {
 		const scene = new THREE.Scene()
@@ -85,177 +80,16 @@ const Halo = () => {
 		const mouse = new THREE.Vector2();
 		let models: THREE.Object3D[] = [];
 
-		(function () {
-			// swiss army knife model
-			addIcons('sak', 'sak.gltf', 0.6, {x: 0, y: -4}, scene, models)
-
-			// go icon
-			addIcons('go',
-				iconsMap['go'],
-				0.015,
-				{
-					x: RADIUS + (RADIUS * RANDOM_NUMBERS[0]) * Math.cos(ANGLE_STEP * SHUFFLE[0]),
-					y: RADIUS + (RADIUS * RANDOM_NUMBERS[0]) * Math.sin(ANGLE_STEP * SHUFFLE[0])
-				},
-				scene,
-				models
-			)
-
-			// linux icon
-			addIcons('linux',
-				iconsMap['linux'],
-				0.04,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[1])) * Math.cos(ANGLE_STEP * SHUFFLE[1]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[1])) * Math.sin(ANGLE_STEP * SHUFFLE[1]),
-				},
-				scene,
-				models
-			)
-
-			// react icon
-			addIcons('react',
-				iconsMap['react'],
-				0.025,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[2])) * Math.cos(ANGLE_STEP * SHUFFLE[2]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[2])) * Math.sin(ANGLE_STEP * SHUFFLE[2]),
-				},
-				scene,
-				models
-			)
-
-			// aws icon
-			addIcons('aws',
-				iconsMap['aws'],
-				0.015,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[3])) * Math.cos(ANGLE_STEP * SHUFFLE[3]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[3])) * Math.sin(ANGLE_STEP * SHUFFLE[3]),
-				},
-				scene,
-				models
-			)
-
-			// docker icon
-			addIcons('docker',
-				iconsMap['docker'],
-				0.02,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[4])) * Math.cos(ANGLE_STEP * SHUFFLE[4]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[4])) * Math.sin(ANGLE_STEP * SHUFFLE[4]),
-				},
-				scene,
-				models
-			)
-
-			// git icon
-			addIcons('git',
-				iconsMap['git'],
-				0.01,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[5])) * Math.cos(ANGLE_STEP * SHUFFLE[5]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[5])) * Math.sin(ANGLE_STEP * SHUFFLE[5]),
-				},
-				scene,
-				models
-			)
-
-			// js icon
-			addIcons('js',
-				iconsMap['js'],
-				0.015,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[6])) * Math.cos(ANGLE_STEP * SHUFFLE[6]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[6])) * Math.sin(ANGLE_STEP * SHUFFLE[6]),
-				},
-				scene,
-				models
-			)
-
-			// python icon
-			addIcons('py',
-				iconsMap['py'],
-				0.0015,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[7])) * Math.cos(ANGLE_STEP * SHUFFLE[7]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[7])) * Math.sin(ANGLE_STEP * SHUFFLE[7]),
-				},
-				scene,
-				models
-			)
-
-			// postgres icon
-			addIcons('postgres',
-				iconsMap['postgres'],
-				0.01,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[8])) * Math.cos(ANGLE_STEP * SHUFFLE[8]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[8])) * Math.sin(ANGLE_STEP * SHUFFLE[8]),
-				},
-				scene,
-				models
-			)
-
-			// redis icon
-			addIcons('redis',
-				iconsMap['redis'],
-				0.015,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[9])) * Math.cos(ANGLE_STEP * SHUFFLE[9]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[9])) * Math.sin(ANGLE_STEP * SHUFFLE[9]),
-				},
-				scene,
-				models
-			)
-
-			// ts icon
-			addIcons('ts',
-				iconsMap['ts'],
-				0.015,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[10])) * Math.cos(ANGLE_STEP * SHUFFLE[10]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[10])) * Math.sin(ANGLE_STEP * SHUFFLE[10]),
-				},
-				scene,
-				models
-			)
-
-			// vite icon
-			addIcons('vite',
-				iconsMap['vite'],
-				0.03,
-				{
-					x: (RADIUS + (RADIUS * RANDOM_NUMBERS[11])) * Math.cos(ANGLE_STEP * SHUFFLE[11]),
-					y: (RADIUS + (RADIUS * RANDOM_NUMBERS[11])) * Math.sin(ANGLE_STEP * SHUFFLE[11]),
-				},
-				scene,
-				models,
-				0x8978FE
-			)
-			// loader.load(iconsMap["vite"], (gltf) => {
-			// 	gltf.scene.scale.set(0.03, 0.03, 0.03)
-			// 	// @ts-ignore
-			// 	gltf.scene.children[0].children[1].material = new THREE.MeshBasicMaterial(
-			// 		{color: 0x8978FE}
-			// 	)
-			// 	iconRefs[11].current = gltf.scene
-			//
-			// 	const radius = RADIUS + (RADIUS * RANDOM_NUMBERS[11])
-			//
-			// 	let x = radius * Math.cos(ANGLE_STEP * SHUFFLE[11])
-			// 	let y = radius * Math.sin(ANGLE_STEP * SHUFFLE[11])
-			//
-			// 	gltf.scene.position.set(x, y, 0)
-			//
-			// 	const boxHelper = new THREE.BoxHelper(gltf.scene, 0xff0000)
-			// 	scene.add(boxHelper)
-			//
-			// 	scene.add(gltf.scene)
-			// })
-
-			render()
-		})()
+		useAllIcons(models, scene, iconsMap, RADIUS, ANGLE_STEP, SHUFFLE, RANDOM_NUMBERS)
+			.then((models: THREE.Object3D[]) => {
+				const refs = models.map(model => {
+					const ref = React.createRef<THREE.Object3D>()
+					ref.current = model
+					return ref
+				})
+				iconRefs.push(...refs)
+				render()
+			})
 
 		scene.position.y -= 5
 
@@ -285,31 +119,16 @@ const Halo = () => {
 			animationFrameId = requestAnimationFrame(animate)
 			time += 0.01
 
-			// move the models
-			if (sakRef.current) {
-				sakRef.current.rotation.y = Math.sin(time) * 0.25
-				sakRef.current.rotation.x = Math.cos(time) * 0.25
-			}
+			// move all models except the first one (swiss army knife)
+			if (iconRefs.length > 0) {
+				for (let i = 1; i < ICON_COUNT; i++) {
+					const ref = iconRefs[i]
 
-			for (let i = 0; i < ICON_COUNT; i++) {
-				const ref = iconRefs[i]
-
-				if (ref.current) {
-					ref.current.rotation.y = Math.sin(time * RANDOM_NUMBERS[i] * 5)
-					ref.current.rotation.z = Math.cos(time * RANDOM_NUMBERS[i] * 5)
+					if (ref.current) {
+						ref.current.rotation.y = Math.sin(time * RANDOM_NUMBERS[i] * 5)
+						ref.current.rotation.z = Math.cos(time * RANDOM_NUMBERS[i] * 5)
+					}
 				}
-			}
-
-			// mouse interaction with models
-			raycaster.setFromCamera(mouse, camera)
-			let hoveredModel: THREE.Object3D | null = null
-
-			const intersects = raycaster.intersectObjects(
-				models
-			)
-
-			if (intersects.length > 0 && intersects[0].object) {
-				console.log(intersects[0].object.name)
 			}
 
 			controls.update()
