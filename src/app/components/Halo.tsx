@@ -2,8 +2,8 @@
 
 import React, {useEffect, useRef} from "react"
 import * as THREE from "three"
-import {GLTFLoader, DRACOLoader, OrbitControls} from "three-stdlib"
-import {useAllIcons, shuffle} from "@/app/utils/hooks"
+import {DRACOLoader, GLTFLoader, OrbitControls} from "three-stdlib"
+import {findTopLevelParent, scaleDown, scaleUp, shuffle, useAllIcons} from "@/app/utils/hooks"
 
 // paths to tech stack icons ->
 const iconsMap: { [key: string]: string } = {
@@ -40,6 +40,7 @@ const Halo = () => {
 
 	useEffect(() => {
 		const scene = new THREE.Scene()
+		scene.name = 'halo-scene'
 		const camera = new THREE.PerspectiveCamera(
 			45,
 			window.innerWidth / (window.innerHeight),
@@ -77,7 +78,7 @@ const Halo = () => {
 
 		// mouse move raycaster
 		const raycaster = new THREE.Raycaster()
-		const mouse = new THREE.Vector2();
+		const mouse = new THREE.Vector2()
 		let models: THREE.Object3D[] = [];
 
 		useAllIcons(models, scene, iconsMap, RADIUS, ANGLE_STEP, SHUFFLE, RANDOM_NUMBERS)
@@ -115,11 +116,12 @@ const Halo = () => {
 		// animation ->
 		let animationFrameId: number
 		let time: number = 0
+		let currentIntersected: THREE.Object3D | null = null
 		const animate = () => {
 			animationFrameId = requestAnimationFrame(animate)
 			time += 0.01
 
-			// move all models except the first one (swiss army knife)
+			// rotate all models except the first one (swiss army knife)
 			if (iconRefs.length > 0) {
 				for (let i = 1; i < ICON_COUNT; i++) {
 					const ref = iconRefs[i]
@@ -129,6 +131,26 @@ const Halo = () => {
 						ref.current.rotation.z = Math.cos(time * RANDOM_NUMBERS[i] * 5)
 					}
 				}
+			}
+
+			// raycaster
+			raycaster.setFromCamera(mouse, camera)
+			const intersects = raycaster.intersectObjects(models)
+
+			if (intersects.length > 0) {
+				const intersect = intersects[0]
+				const intersected = findTopLevelParent(intersect.object)
+				if (intersected !== currentIntersected) {
+					if (currentIntersected) {
+						scaleDown(currentIntersected)
+					}
+
+					scaleUp(intersected)
+					currentIntersected = intersected
+				}
+			} else if (currentIntersected) {
+				scaleDown(currentIntersected)
+				currentIntersected = null
 			}
 
 			controls.update()

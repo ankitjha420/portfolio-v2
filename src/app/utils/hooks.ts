@@ -1,10 +1,11 @@
+import gsap from "gsap"
 import * as THREE from "three"
-import {DRACOLoader, GLTFLoader} from "three-stdlib";
+import {DRACOLoader, GLTFLoader} from "three-stdlib"
 
 export const useDate = (): string => {
 	const date = new Date()
 
-	const daysOfWeek: {[key: number]: string} = {
+	const daysOfWeek: { [key: number]: string } = {
 		1: 'Sunday',
 		2: 'Monday',
 		3: 'Tuesday',
@@ -13,7 +14,7 @@ export const useDate = (): string => {
 		6: 'Friday',
 		7: 'Saturday',
 	}
-	const monthsOfYear: {[key: number]: string} = {
+	const monthsOfYear: { [key: number]: string } = {
 		1: 'January',
 		2: 'February',
 		3: 'March',
@@ -76,9 +77,6 @@ export const useAddIcons = (
 						{color: color}
 					)
 				}
-
-				const boxHelper = new THREE.BoxHelper(gltf.scene, 0xff0000)
-				scene.add(boxHelper)
 
 				modelsArray.push(gltf.scene)
 				scene.add(gltf.scene)
@@ -250,4 +248,49 @@ export const useAllIcons = async (
 	))
 
 	return modelsArray
+}
+
+export const findTopLevelParent = (obj: THREE.Object3D): THREE.Object3D => {
+	if (!obj.parent || obj.parent.name === 'halo-scene') {
+		return obj
+	}
+	return findTopLevelParent(obj.parent)
+}
+
+const iconScales: { [key: string]: number } = {
+	'sak': 0.6,
+	'go': 0.015,
+	'linux': 0.04,
+	'react': 0.025,
+	'aws': 0.015,
+	'docker': 0.02,
+	'git': 0.01,
+	'js': 0.015,
+	'postgres': 0.01,
+	'py': 0.0015,
+	'redis': 0.015,
+	'ts': 0.015,
+	'vite': 0.03,
+}
+
+export const scaleUp = (obj: THREE.Object3D) => {
+	const name: string = obj.name
+	gsap.to(obj.scale, {
+		x: iconScales[name] + (iconScales[name] * 0.5),
+		y: iconScales[name] + (iconScales[name] * 0.5),
+		z: iconScales[name] + (iconScales[name] * 0.5),
+		duration: 0.3,
+		ease: 'power2.out'
+	})
+}
+
+export const scaleDown = (obj: THREE.Object3D) => {
+	const name: string = obj.name
+	gsap.to(obj.scale, {
+		x: iconScales[name],
+		y: iconScales[name],
+		z: iconScales[name],
+		duration: 0.3,
+		ease: 'power2.out'
+	})
 }
